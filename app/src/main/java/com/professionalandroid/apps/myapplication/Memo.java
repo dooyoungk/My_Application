@@ -4,14 +4,30 @@ import java.io.Serializable;
 
 public class Memo implements Serializable {
 
-    String maintext;
-    String subtext;
-    int isdone;
+    int seq;
+    String maintext; //메모
+    String subtext; //날짜
+    int isdone; //완료여부
 
     public Memo(String maintext, String subtext, int isdone) {
-        this.maintext = maintext; //메모
-        this.subtext = subtext; //날짜
-        this.isdone = isdone; //완료여부
+        this.maintext = maintext;
+        this.subtext = subtext;
+        this.isdone = isdone;
+    }
+
+    public Memo(int seq, String maintext, String subtext, int isdone) {
+        this.seq = seq;
+        this.maintext = maintext;
+        this.subtext = subtext;
+        this.isdone = isdone;
+    }
+
+    public int getSeq() {
+        return seq;
+    }
+
+    public void setSeq(int seq) {
+        this.seq = seq;
     }
 
     public String getMaintext() {

@@ -14,12 +14,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+
+    SQLiteHelper dbHelper;
 
     RecyclerView recyclerView;
     RecyclerAdapter recyclerAdapter;
@@ -31,12 +34,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        memoList = new ArrayList<>();
-        memoList.add(new Memo("test1", "testtest", 0));
-        memoList.add(new Memo("test2", "testtest", 0));
-        memoList.add(new Memo("test3", "testtest", 0));
-        memoList.add(new Memo("test4", "testtest", 1));
-        memoList.add(new Memo("test5", "testtest", 1));
+        dbHelper = new SQLiteHelper(MainActivity.this);
+        memoList = dbHelper.selectAll();
 
         recyclerView = findViewById(R.id.recyclerview);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(MainActivity.this);
@@ -67,6 +66,8 @@ public class MainActivity extends AppCompatActivity {
             Memo memo = new Memo(strMain, strSub, 0);
             recyclerAdapter.addItem(memo);
             recyclerAdapter.notifyDataSetChanged();
+
+            dbHelper.insertMemo(memo);
         }
     }
 
@@ -92,6 +93,8 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(@NonNull ItemViewHolder itemViewHolder, int i) {
             Memo memo = listdata.get(i);
+
+            itemViewHolder.maintext.setTag(memo.getSeq());
 
             itemViewHolder.maintext.setText(memo.getMaintext());
             itemViewHolder.subtext.setText(memo.getSubtext());
@@ -123,6 +126,23 @@ public class MainActivity extends AppCompatActivity {
                 maintext = itemView.findViewById(R.id.item_maintext);
                 subtext = itemView.findViewById(R.id.item_subtext);
                 img = itemView.findViewById(R.id.item_image);
+
+                itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View view) {
+
+                        int position = getAdapterPosition();
+                        int seq = (int)maintext.getTag();
+
+                        if(position != RecyclerView.NO_POSITION) {
+                            dbHelper.deleteMemo(seq);
+                            removeItem(position);
+                            notifyDataSetChanged();
+                        }
+
+                        return false;
+                    }
+                });
             }
         }
     }

@@ -1,15 +1,18 @@
 package com.professionalandroid.apps.myapplication;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -20,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
     RecyclerAdapter recyclerAdapter;
-
+    Button btnAdd;
     List<Memo> memoList;
 
     @Override
@@ -41,6 +44,30 @@ public class MainActivity extends AppCompatActivity {
 
         recyclerAdapter = new RecyclerAdapter(memoList);
         recyclerView.setAdapter(recyclerAdapter);
+        btnAdd = findViewById(R.id.btnAdd);
+
+        btnAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //새로운 메모 작성
+                Intent intent = new Intent(MainActivity.this, AddActivity.class);
+                startActivityForResult(intent, 0);
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == 0) {
+            String strMain = data.getStringExtra("main");
+            String strSub = data.getStringExtra("sub");
+
+            Memo memo = new Memo(strMain, strSub, 0);
+            recyclerAdapter.addItem(memo);
+            recyclerAdapter.notifyDataSetChanged();
+        }
     }
 
     class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemViewHolder> {

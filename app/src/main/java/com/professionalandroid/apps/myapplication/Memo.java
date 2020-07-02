@@ -1,15 +1,17 @@
 package com.professionalandroid.apps.myapplication;
 
-public class Memo {
+import java.io.Serializable;
+
+public class Memo implements Serializable {
 
     String maintext;
     String subtext;
     int isdone;
 
     public Memo(String maintext, String subtext, int isdone) {
-        this.maintext = maintext;
-        this.subtext = subtext;
-        this.isdone = isdone;
+        this.maintext = maintext; //메모
+        this.subtext = subtext; //날짜
+        this.isdone = isdone; //완료여부
     }
 
     public String getMaintext() {
